@@ -1,0 +1,8 @@
+Description:
+    Installs an initializer in config/initializers/ for Rack::Casual
+
+Example:
+    rails generate rack_casual
+
+    This will create:
+        config/initializers/rack-casual.rb
