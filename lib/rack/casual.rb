@@ -44,7 +44,7 @@ module Rack
 
     # Use this scope when finding users
     mattr_accessor :authentication_scope
-    @@authentication_scope = :scoped
+    @@authentication_scope = nil
 
     # Set to true to auto-create users
     mattr_accessor :create_user

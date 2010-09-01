@@ -30,6 +30,11 @@ Rack::Casual.setup do |config|
   # This is the username attribute used by your User model.
   # config.username = "username"
   
+  # Finding the user
+  # You can set a custom scope that Rack::Casual should use when finding the user.
+  # If you have a active scope, you can set this to :active.
+  # config.authentication_scope = nil
+  
   # Tracking
   # If you have last_login_at and/or last_login_ip attributes on your User model,
   # Rack::Casual can update these when user logs in.

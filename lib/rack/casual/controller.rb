@@ -9,11 +9,11 @@ module Rack
       end
 
       def logged_in?
-        !session[:user].nil?
+        !session[::Rack::Casual.session_key_user].nil?
       end
 
       def current_user
-        @current_user ||= ::Rack::Casual::UserFactory.resource.find(session[:user])
+        @current_user ||= ::Rack::Casual::UserFactory.authentication_scope.find(session[:user])
       end
 
     end

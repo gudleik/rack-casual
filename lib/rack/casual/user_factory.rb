@@ -32,23 +32,25 @@ module Rack
       protected
       
       def self.authenticate_with_token(request)
-        user = resource.where(Rack::Casual.auth_token_key => request.params[Rack::Casual.auth_token_key]).first
+        user = authentication_scope.where(Rack::Casual.auth_token_key => request.params[Rack::Casual.auth_token_key]).first
         update_tracking(user, request) if user
         user
       end
 
-      # Update tracking info (last logged in at / ip)
+      # Update tracking info (last logged in at / ip) if tracking_enabled is set.
+      # Saves the user regardless of whether tracking was updated or not.
       def self.update_tracking(user, request)
         if Rack::Casual.tracking_enabled
           user.last_login_at = Time.now   if user.respond_to?(:last_login_at)
           user.last_login_ip = request.ip if user.respond_to?(:last_login_ip)
-          user.save
+          user.login_count += 1           if user.respond_to?(:login_count)
         end
+        user.save
       end
 
       # Find user by username
       def self.find(username)
-        resource.where(Rack::Casual.username => username).first
+        authentication_scope.where(Rack::Casual.username => username).first
       end
 
       # Initializes a new user
@@ -60,7 +62,17 @@ module Rack
       def self.resource
         Rack::Casual.user_class.constantize
       end
-
+      
+      # Returns the scope used to find users
+      def self.authentication_scope
+        if Rack::Casual.authentication_scope
+          puts "Authentication scope is kinda broken and should be avoided"
+          resource.send(Rack::Casual.authentication_scope)
+        else
+          resource.scoped
+        end
+      end
+      
     end
     
   end  

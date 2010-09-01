@@ -21,7 +21,11 @@ This creates a config/initializers/rack-casual.rb file.
 Make sure base_url points to your CAS server.
 If your user model is called something other than "User", you can change this here.
 
-Now, add a before_filter to your controller:
+Next you must configure your application to use the plugin. 
+For Rails3, you can add this to your config/application.rb
+  config.middleware.use "Rack::Casual::Authentication"
+
+Finally, to authenticate your users, add a before_filter to your controller:
 
   class ApplicationController < ActionController::Base
     before_filter :authenticate!
@@ -102,12 +106,16 @@ Tracking
 ========
 
 If you have enabled tracking, Rack::Casual can update the logged in user with information about last login time and IP.
-You must have a *last_login_at* attribute (datetime) and/or a *last_login_ip* attribute (string) in your User model for this to work.
+These variables will be updated if they are present in your User model:
+  * last_login_at (datetime)
+  * last_login_ip (string)
+  * login_count   (integer)
 
 TODO
 ====
 
-Testing. How embarrasing. A gem without tests is like a forrest without trees.
-
+1. Testing. How embarrasing. A gem without tests is like a forrest without trees.
+2. Replace ruby-cas with something "lighter", like casual, but casual doesn't seem to support extra attributes...
+   Note to self: http://rubycas-client.rubyforge.org/classes/CASClient/ValidationResponse.src/M000044.html
 
 Copyright (c) 2010 Gudleik Rasch <gudleik@gmail.com>, released under the MIT license

@@ -22,10 +22,11 @@ module Rack
       def process_request_from_cas
         if ticket = read_ticket
           if user = UserFactory.authenticate_with_cas_ticket(ticket, @request)
+            # TODO: remove the params['ticket'] so the app doesn't see this...
             @request.session[Rack::Casual.session_key_user] = user.id
+          else
+            # [ 403, { "Content-Type" => "text/plain" }, "Sorry, I was unable to authenticate you" ]
           end
-        else
-          redirect_to_cas
         end
       end
 
