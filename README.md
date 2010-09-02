@@ -1,21 +1,36 @@
 Rack::Casual
 ============
 
-A very simple Rack authentication plugin using CAS or a token.
+A simple Rack middleware that does authentication using CAS or a token.
 It kicks in whenever a 401 response is returned from the server.
 
-The plugin has only been tested using ActiveRecord and Rails 3.
+Compability
+===========
+
+* Ruby 1.8.7 and 1.9.2
+* CAS 2.0 using rubycas-server
+* Rails 3 and ActiveRecord 3
+* Sinatra 1.0
+
 
 Installation
 ============
 
+### Sinatra
+
+  $ gem install 'rack-casual'
+  
+See examples/sinatra_app.rb for a sample app.
+
+### Rails 3
+
 Add this to your Gemfile:
 
-  gem 'rack-casual'
+    $ gem 'rack-casual'
   
 Run bundle install, and add a configuration file:
 
-  $ rails generate rack_casual
+    $ rails generate rack_casual
   
 This creates a config/initializers/rack-casual.rb file. 
 Make sure base_url points to your CAS server.
@@ -27,9 +42,9 @@ For Rails3, you can add this to your config/application.rb
 
 Finally, to authenticate your users, add a before_filter to your controller:
 
-  class ApplicationController < ActionController::Base
-    before_filter :authenticate!
-  end
+    class ApplicationController < ActionController::Base
+      before_filter :authenticate!
+    end
 
 
 Usage
@@ -62,25 +77,19 @@ If there are no users with that token, the client just receives the 401 error.
 It does not fallback to CAS or create a user automatically (doh).
 
 
-Finding users
+Authorization
 =============
 
-If you want to control how Rack::Casual finds the user, you can set a scope to be used.
-  # config/initializers/rack-casual.rb:
-  config.authentication_scope = :active
+Rack::Casual calls active? on your user model if that method exists to determine whether the user can log in or not.
+So just add this to control whether authenticated users can log in or not.
   
-  # app/models/user.rb
-  class User < ActiveRecord::Base
-    def self.active
-      where(:active => true)
+    # app/models/user.rb
+    class User < ActiveRecord::Base
+      def active?
+        # i'm sure you can figure something out...
+      end
     end
-  end
   
-Then Rack::Casual will only search among users where active is true.
-A side effect of this is that Rack::Casual will try to create a user that already exists.
-However, this should not be a problem as long as your User model validates the uniqueness of the username.
-
-The default scope to use is
 
 Extra attributes
 ================
@@ -89,17 +98,17 @@ When creating users automatically, Rack::Casual can also add extra attributes if
 For this to work your User model must have a cas_extra_attributes= instance method.
 Here's an example:
 
-  class User < ActiveRecord::Base
-    def cas_extra_attributes=(extra_attributes)
-      extra_attributes.each do |name, value|
-        case name.to_sym
-          when :name   then self.name   = value
-          when :email  then self.email  = value
-          when :phone  then self.phone  = value
+    class User < ActiveRecord::Base
+      def cas_extra_attributes=(extra_attributes)
+        extra_attributes.each do |name, value|
+          case name.to_sym
+            when :name   then self.name   = value
+            when :email  then self.email  = value
+            when :phone  then self.phone  = value
+          end
         end
       end
     end
-  end
   
 
 Tracking
@@ -114,8 +123,6 @@ These variables will be updated if they are present in your User model:
 TODO
 ====
 
-1. Testing. How embarrasing. A gem without tests is like a forrest without trees.
-2. Replace ruby-cas with something "lighter", like casual, but casual doesn't seem to support extra attributes...
-   Note to self: http://rubycas-client.rubyforge.org/classes/CASClient/ValidationResponse.src/M000044.html
+More tests dammit.
 
 Copyright (c) 2010 Gudleik Rasch <gudleik@gmail.com>, released under the MIT license
