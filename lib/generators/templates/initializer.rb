@@ -4,7 +4,7 @@
 Rack::Casual.setup do |config|
   
   # Base URL to your CAS server -- required
-  config.base_url = 'http://localhost:8088'
+  config.cas_url = 'http://localhost:8088'
   
   # If you want users to authenticate using an authentication token,
   # set the auth_token_key to the name of the attribute in your user model.
@@ -14,7 +14,7 @@ Rack::Casual.setup do |config|
 
   # Name of the session key used to store the user-id
   # Default is "user", so you get session[:user]
-  # config.session_key_user = "user"
+  # config.session_key = "user"
 
   # Rack::Casual can create the user automatically on successful login
   # Set this to false to disable this feature.
@@ -29,11 +29,6 @@ Rack::Casual.setup do |config|
   
   # This is the username attribute used by your User model.
   # config.username = "username"
-  
-  # Finding the user
-  # You can set a custom scope that Rack::Casual should use when finding the user.
-  # If you have a active scope, you can set this to :active.
-  # config.authentication_scope = nil
   
   # Tracking
   # If you have last_login_at and/or last_login_ip attributes on your User model,

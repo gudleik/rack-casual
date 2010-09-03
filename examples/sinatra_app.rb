@@ -42,7 +42,7 @@ class User
   end
   
   def active?
-    false
+    true
   end
   
   def save
