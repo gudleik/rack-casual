@@ -4,23 +4,25 @@ Rack::Casual
 A simple Rack middleware that does authentication using CAS or a token.
 It kicks in whenever a 401 response is returned from the server.
 
-Compability
+Tested with
 ===========
 
-* Ruby 1.8.7 and 1.9.2
+* Ruby 1.8.7 / 1.9.2
 * CAS 2.0 using rubycas-server
 * Rails 3 and ActiveRecord 3
 * Sinatra 1.0
 
+Although ActiveRecord is not required, it uses ActiveRecord-ish methods to find and create users.
+See examples/sinatra_app.rb for an example of which required methods the user model must support.
 
 Installation
 ============
 
 ### Sinatra
 
-  $ gem install 'rack-casual'
+    $ gem install 'rack-casual'
   
-See examples/sinatra_app.rb for a sample app.
+See examples/sinatra_app.rb for a sample Sinatra app.
 
 ### Rails 3
 
@@ -33,11 +35,12 @@ Run bundle install, and add a configuration file:
     $ rails generate rack_casual
   
 This creates a config/initializers/rack-casual.rb file. 
-Make sure base_url points to your CAS server.
+Make sure *cas_url* points to your CAS server.
 If your user model is called something other than "User", you can change this here.
 
 Next you must configure your application to use the plugin. 
-For Rails3, you can add this to your config/application.rb
+For Rails3, you can add this to your config/application.rb:
+
   config.middleware.use "Rack::Casual::Authentication"
 
 Finally, to authenticate your users, add a before_filter to your controller:
@@ -80,9 +83,7 @@ CAS is nice and all that, but it's not so nice for webservices.
 Therefore Rack::Casual can authenticate requests using a token.
 Make sure your User model has a auth_token attribute. You can call it whatever you want, but it defaults to auth_token.
 
-From your client you can now authenticate using this token:
-
-  http://your-app.com/my-protected-webservice?auth_token=secret
+From your client you can now authenticate using a token: http://your-app.com/my-protected-webservice?auth_token=secret
   
 If there are no users with that token, the client just receives the 401 error. 
 It does not fallback to CAS or create a user automatically (doh).
@@ -131,6 +132,11 @@ These variables will be updated if they are present in your User model:
 * last_login_at (datetime)
 * last_login_ip (string)
 * login_count   (integer)
+
+Known issues
+============
+
+If Rack::Casual fails to create the user you'll end up in a redirect loop.
 
 TODO
 ====
