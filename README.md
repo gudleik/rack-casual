@@ -46,6 +46,17 @@ Finally, to authenticate your users, add a before_filter to your controller:
       before_filter :authenticate!
     end
 
+If you want to have a named route to the CAS servers logout url, you can do this:
+
+    # config/routes.rb
+    match '/logout' => redirect(Rack::Casual::Client.logout_url), :as => :logout
+
+If you pass a :url then the CAS server should display a message telling the user to follow 
+the given link.
+  
+    # config/routes.rb
+    match '/logout' => redirect(Rack::Casual::Client.logout_url(:url => "http://foo.example.org/logged_out")), :as => :logout
+
 
 Usage
 =====
@@ -116,9 +127,10 @@ Tracking
 
 If you have enabled tracking, Rack::Casual can update the logged in user with information about last login time and IP.
 These variables will be updated if they are present in your User model:
-  * last_login_at (datetime)
-  * last_login_ip (string)
-  * login_count   (integer)
+
+* last_login_at (datetime)
+* last_login_ip (string)
+* login_count   (integer)
 
 TODO
 ====
