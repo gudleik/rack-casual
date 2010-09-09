@@ -133,6 +133,15 @@ These variables will be updated if they are present in your User model:
 * last_login_ip (string)
 * login_count   (integer)
 
+Skipping URLs
+=============
+
+I couldn't find an easy way to disable a Rack Middleware in Rails, so I added a configure option to Rack::Casual called *ignore_url*.
+Rack::Casual will not be called when the request.path matches the pattern in config.ignore_url.
+
+Useful if you want a basic http authentication for /admin with a predefined set of users that is not part of your CAS infrastructure. 
+Just set config.ignore_url = '^/admin' and Rack::Casual won't do anything when accessing URLs that matches /admin
+
 Known issues
 ============
 

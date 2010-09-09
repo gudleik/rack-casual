@@ -15,10 +15,11 @@ use Rack::Lint
 use Rack::Casual::Authentication
 
 Rack::Casual.setup do |config|
-  config.cas_url     = "http://localhost:8080"
+  config.cas_url     = "http://localhost:8088"
   config.auth_token  = "auth_token"
   config.session_key = "user"
   config.create_user = false
+  config.ignore_url    = "^/admin"
 end
 
 # User class with a few activerecord-ish methods to make Rack::Casual work properly.
@@ -58,10 +59,16 @@ end
 
 set :sessions, true
 
-before do
-  halt 401, 'Forbidden dammit' unless session["user"]
-end
+# before do
+#   halt 401, 'Forbidden dammit' unless session["user"]
+# end
 
 get '/' do
+  status 401    # should trigger rack-casual
   %{Hello, your user-id is #{session["user"]}}
+end
+
+get '/admin' do
+  status 401    # should not trigger rack-casual because of ignore_url
+  "Welcome to the Admin section!"
 end

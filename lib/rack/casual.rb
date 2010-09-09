@@ -23,6 +23,10 @@ module Rack
       :username         => "username",          # Name of username attribute in User model
       :auth_token       => "auth_token",        # Name of authentication token attribute in User model
       :tracking_enabled => true,                # Enable tracking on user
+      :ignore_url       => nil,                 # Skip processing urls that match this regex pattern
+      :login_url        => '/login',            # Path to CAS login action  
+      :logout_url       => '/logout',           # Path to CAS logout action
+      :validate_url     => '/serviceValidate'   # Path to CAS service validate action
     }
 
     # Create attribute accessors for each key/value pair in options.

@@ -11,7 +11,11 @@ describe "configuration" do
       :user_class       => "User",              
       :username         => "username",
       :auth_token       => "auth_token",        
-      :tracking_enabled => true
+      :tracking_enabled => true,
+      :ignore_url       => nil,
+      :login_url        => '/login',
+      :logout_url       => '/logout',
+      :validate_url     => '/serviceValidate'      
     }
   end
   

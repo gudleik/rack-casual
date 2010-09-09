@@ -25,11 +25,16 @@ module Rack
       def call(env)
         @request  = Rack::Request.new(env)
         @env = env
-    
-        unless process_request_from_cas
+
+        # Skip middleware if ignore_url is set and matches request.path
+        if Rack::Casual.ignore_url && @request.path.match(Rack::Casual.ignore_url)
           @app.call(env)
         else
-          handle_401(@app.call(env))
+          unless process_request_from_cas
+            @app.call(env)
+          else
+            handle_401(@app.call(env))
+          end
         end
       end
   

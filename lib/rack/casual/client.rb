@@ -68,7 +68,6 @@ module Rack
         http.use_ssl = (url.scheme == "https") 
     
         body = http.get(url.request_uri).body
-        puts "Result: #{body}"
         result = Nokogiri.parse(body)
 
         # set username and extra attributes
@@ -85,7 +84,7 @@ module Rack
       def find_attributes(xml)
         @extra_attributes = {}
         xml.search("//cas:authenticationSuccess/*").each do |el|
-          puts " * Attribute #{el.name} = #{el.content.to_s}"
+          # puts " * Attribute #{el.name} = #{el.content.to_s}"
           value = YAML::parse(el.content).value.first.value rescue nil
           @extra_attributes[el.name] = value
         end
@@ -109,9 +108,9 @@ module Rack
         url = Rack::Casual.cas_url.sub(/\/+$/, '')
     
         url << case action
-        when :login    then "/login"
-        when :logout   then "/logout"
-        when :validate then "/serviceValidate"
+        when :login    then Rack::Casual.login_url
+        when :logout   then Rack::Casual.logout_url
+        when :validate then Rack::Casual.validate_url
         else
           action.to_s
         end

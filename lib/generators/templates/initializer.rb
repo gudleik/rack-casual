@@ -34,20 +34,27 @@ Rack::Casual.setup do |config|
   # If you have last_login_at and/or last_login_ip attributes on your User model,
   # Rack::Casual can update these when user logs in.
   # config.enable_tracking = true
+  
+  # Skipping paths
+  # Rack::Casual ignores paths that matches this pattern.
+  # If you want to have a separate http authentication for /admin, 
+  # you can set ignore_url = '^/admin'
+  # config.ignore_url = nil 
+  
+  ##
+  ## CAS server settings
+  ##
 
   # Name of the ticket parameter used by CAS.
   # config.ticket_param = 'ticket'
   
-  # URL to the service validation on your CAS server.
-  # nil = use defaults
-  # config.validate_url = nil
+  # CAS service validation path
+  # config.validate_url = '/serviceValidate'
   
-  # CAS login url.
-  # nil = use defaults
-  # config.login_url = nil
+  # CAS login path
+  # config.login_url = '/login'
   
-  # CAS logout url.
-  # nil = use defaults
-  # config.logout_url = nil
+  # CAS logout path
+  # config.logout_url = '/logout'
   
 end
